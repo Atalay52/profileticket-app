@@ -1,0 +1,33 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Hardhat
+        run: cd contracts && npm install
+
+      - name: Deploy Contract
+        run: cd contracts && npx hardhat run script/Deploy.s.sol --network baseSepolia
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          TREASURY: ${{ secrets.TREASURY }}
+
+      - name: Deploy Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: app
