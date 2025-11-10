@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/frame", "destination": "/api/frame" },
+    { "source": "/api/tx", "destination": "/api/tx" }
+  ]
+}
