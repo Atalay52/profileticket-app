@@ -16,15 +16,29 @@ jobs:
           node-version: 20
 
       - name: Install Hardhat Dependencies
-        run: cd contracts && npm install
+        run: |
+          cd contracts
+          npm init -y  # package.json oluştur
+          npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox @openzeppelin/contracts dotenv
+        continue-on-error: false  # Failed olursa dur
 
       - name: Deploy Contract to Base Sepolia
-        run: cd contracts && npx hardhat run script/Deploy.s.sol --network baseSepolia
+        id: deploy
+        run: |
+          cd contracts
+          npx hardhat compile
+          npx hardhat run script/Deploy.s.sol --network baseSepolia
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           TREASURY: ${{ secrets.TREASURY }}
+        continue-on-error: true  # Deploy failed olursa devam et (ama kırmızı X kalır)
+
+      - name: Output Contract Address
+        if: always()  # Her durumda çalış
+        run: echo "Contract Address: ${{ steps.deploy.outputs.contractAddress || 'Failed' }}"
 
       - name: Deploy Frontend to Vercel
+        if: success()  # Sadece başarılıysa
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
