@@ -11,6 +11,6 @@
     "next": "^24",
     "react": "^24",
     "react-dom": "^24",
-    "@coinbase/onchainkit/frame": "24"
+    "@coinbase/onchainkit/frame": "latest"
   }
 }
