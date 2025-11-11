@@ -1,6 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/frame", "destination": "/api/frame" },
-    { "source": "/api/tx", "destination": "/api/tx" }
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "out" } }
   ]
 }
