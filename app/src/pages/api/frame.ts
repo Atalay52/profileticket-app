@@ -2,21 +2,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { FrameRequest, getFrameMessage } from "@coinbase/onchainkit/frame";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).end();
-  }
+  if (req.method !== "POST") return res.status(405).end();
 
-  // Next.js pages API parses JSON into req.body automatically when content-type is application/json
   const body = req.body as FrameRequest;
   const { isValid, message } = await getFrameMessage(body);
 
-  if (!isValid) {
-    return res.status(400).send("Invalid");
-  }
+  if (!isValid) return res.status(400).send("Invalid");
 
   const username = (message.input || "reis").toLowerCase();
   const amount = 10;
-  const pricePer = 0.01 + (0 * 0.0005); // TODO: gerçek supply'den çek
+  const pricePer = 0.01;
   const total = amount * pricePer;
 
   const html = `<!DOCTYPE html>
